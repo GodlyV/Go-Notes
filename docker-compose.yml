@@ -1,10 +1,33 @@
 version: '3.8'
 
 services:
+  postgres_db:
+    image: postgres:14.1-alpine
+    restart: always
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+      - ./setup.sql:/docker-entrypoint-initdb.d/setup.sql
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=notes
+
+  adminer:
+    image: adminer:latest
+    restart: unless-stopped
+    ports:
+      - 8080:8080
+    depends_on:
+      - postgres_db
+    environment:
+      ADMINER_DEFAULT_SERVER: postgres_db
+
   frontend:
     stdin_open: true
     build:
       dockerfile: DockerFile
-      context: ./frontend
+      context: ./notesApp
     ports:
       - 3000:3000
