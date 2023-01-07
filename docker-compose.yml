@@ -28,6 +28,6 @@ services:
     stdin_open: true
     build:
       dockerfile: DockerFile
-      context: ./notesApp
+      context: ./frontend
     ports:
       - 3000:3000
