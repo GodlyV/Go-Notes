@@ -10,4 +10,6 @@ RUN npm install axios
 RUN npm install react-router-dom
 RUN npm install react-router
 RUN npm install @tanstack/react-query
+RUN npm install -D tailwindcss
+COPY tailwind.config.js ./
 CMD ["npm", "run", "start"]
