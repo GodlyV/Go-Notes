@@ -1,53 +1,63 @@
 import React from 'react';
-import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
-
-const bull = (
-  <Box
-    component="span"
-    sx={{ display: 'inline-block', mx: '2px', transform: 'scale(0.8)' }}
-  >
-    •
-  </Box>
-);
-
+import axios from 'axios';
+import { useQuery } from '@tanstack/react-query';
+import CardHeader from '@mui/material/CardHeader';
+import {positions} from '@mui/system';
 function Notes() {
-  return (
-    <>
-    <div className="w-full mt-10">
-      <Grid container spacing={4}>
-        <Box sx={{ minWidth: 100 }}>
-        <Card variant="outlined">
-          <CardContent>
-          <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-              Word of the Day
-          </Typography>
-          <Typography variant="h5" component="div">
-              be{bull}nev{bull}o{bull}lent
-          </Typography>
-          <Typography sx={{ mb: 1.5 }} color="text.secondary">
-              adjective
-          </Typography>
-          <Typography variant="body2">
-              well meaning and kindly.
-              <br />
-              {'"a benevolent smile"'}
-          </Typography>
-          </CardContent>
-          <CardActions>
-          <Button size="small">Learn More</Button>
-          </CardActions>
-        </Card>
-    </Box>
-      </Grid>
-   
-    </div>
-    </>
+  const fetchData: () => any = async () => {
+    const URL = `http://localhost:3001/notes`;
+    const response = await axios.get(URL);
+    return response;
+  };
+  const { data, refetch, isLoading, isError, isSuccess } = useQuery(
+    ["getNotes"],
+    fetchData,
+    { enabled: true }
   );
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+  if (isError) {
+    return <div>Error</div>;
+  }
+  if (isSuccess) {
+    console.log(data)
+    return (
+      <>
+      <div className="w-full mt-10">
+        <Grid container spacing={1}>
+          {data.data.map((note: any) => (
+             <Card 
+              variant="outlined"
+              id={note.nId}
+              key={note.nId}
+              sx={{
+                width: 225,
+                height: 225,
+                position: "relative",
+                margin: "20px",
+            }}
+             >
+              <CardHeader key={note.nId} titleTypographyProps={{variant:'h6'}} title={note.title}></CardHeader>
+               <CardContent>
+                <Typography variant="body2">{note.text}</Typography>
+               </CardContent>
+               <CardActions sx={{bottom: 'absolute'}}>
+               <Button size="small">Learn More</Button>
+               </CardActions>
+             </Card>
+          ))}
+        </Grid>
+      </div>
+      </>
+    );
+  }
+  return <div>Nothing</div>
 }
 export default Notes;
