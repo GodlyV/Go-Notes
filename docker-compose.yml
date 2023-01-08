@@ -24,6 +24,15 @@ services:
     environment:
       ADMINER_DEFAULT_SERVER: postgres_db
 
+  backend:
+    build: 
+      dockerfile: Dockerfile
+      context: ./backend
+    volumes:
+      - /app/node_modules
+    ports:
+      - 3001:3001
+
   frontend:
     stdin_open: true
     build:
