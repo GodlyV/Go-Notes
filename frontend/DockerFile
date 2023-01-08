@@ -4,4 +4,10 @@ COPY package.json ./
 COPY package-lock.json ./
 COPY ./ ./
 RUN npm i
+RUN npm install @mui/material @mui/styled-engine-sc styled-components
+RUN npm install @mui/icons-material
+RUN npm install axios
+RUN npm install react-router-dom
+RUN npm install react-router
+RUN npm install @tanstack/react-query
 CMD ["npm", "run", "start"]
