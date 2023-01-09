@@ -75,6 +75,15 @@ app.delete('/DELETE/notes/:uid/:nid', (req, res) => {
 
 });
 
+app.post('/POST/notes/:uid', (req, res) => {
+    const title =req.body.title;
+    const text =req.body.text;
+    const insert = `INSERT INTO notes (uid, title,text) VALUES ( ${req.params.uid},'${title}', '${text}')`;
+    pool.query(insert,(err,result)=>{
+        res.send(result.rows);
+    });
+});
+
         
 
 app.listen(port, () => {

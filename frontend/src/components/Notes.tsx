@@ -24,6 +24,7 @@ export interface NoteModalProps{
   open: boolean;
   note: NoteProps;
   handleClose:() => void,
+  isNewNote: boolean;
 }
 function Notes() {
   const {refreshNumber, setRefreshNumber} = useContext(MyGlobalContext);
@@ -31,30 +32,32 @@ function Notes() {
   const [uid,setUid] = useState(0);
   const [nid,setNid] = useState(0);
   const [open, setOpen] = useState(false);
+  const [isNewNote,setIsNewNote] = useState(false);
   const handleOpen = (note: NoteProps) => {
     setSelected(note);
     setOpen(true);
   };
   const handleClose = () => {
     setSelected({nId:0,uId:0,title:"",text:""});
+    setIsNewNote(false);
     setOpen(false);
   };
   const handleDelete = (uid:number,nid:number ) => {
-    console.log("toDelete");
     setUid(uid);
     setNid(nid);
     reDelete();
   };
+  const handleAdd = () => {
+    setIsNewNote(true);
+  };
   useEffect(() => {
-    console.log("useEffect");
     if(!open && nid !== 0 && uid !== 0 && nid !== undefined && uid !== undefined){
       console.log(nid);
       console.log(uid);
-      console.log("gonna dleetwe!");
+
       reDelete();
       deleteNote();
     }
-    reDelete();
   },[uid,nid]);
 
   const fetchNote: () => any = async () => {
@@ -151,7 +154,7 @@ function Notes() {
             }}
             >
               <CardActions sx={{marginLeft: "auto",marginRight:"auto"}}>
-              <IconButton aria-label="add-Icon">
+              <IconButton onClick={()=>handleAdd()} aria-label="add-Icon">
                 <AddIcon></AddIcon>
                   </IconButton>
               </CardActions>
@@ -160,7 +163,7 @@ function Notes() {
           
         </Grid>
       </div>
-      <NoteModal open={open} note={selected} onClose={handleClose}></NoteModal>
+      <NoteModal open={open} note={selected} onClose={handleClose} isNewNote={isNewNote}></NoteModal>
       </>
     );
   }
@@ -183,7 +186,7 @@ function Notes() {
             }}
             >
               <CardActions sx={{marginLeft: "auto",marginRight:"auto"}}>
-              <IconButton aria-label="add-Icon">
+              <IconButton onClick={()=>handleAdd} aria-label="add-Icon">
                 <AddIcon></AddIcon>
                   </IconButton>
               </CardActions>
@@ -191,7 +194,7 @@ function Notes() {
           </div>
         </Grid>
       </div>
-      <NoteModal open={open} note={selected} onClose={handleClose}></NoteModal>
+      <NoteModal open={open} note={selected} onClose={handleClose} isNewNote={isNewNote}></NoteModal>
   </div>
   );
 }

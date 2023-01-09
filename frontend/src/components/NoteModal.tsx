@@ -12,6 +12,7 @@ interface IModalContentEditNotesProps{
     open: boolean;
     note: any;
     onClose:()=> void;
+    isNewNote: boolean;
 }
 
 const style = {
@@ -26,7 +27,7 @@ const style = {
     p: 4,
   };
 
-const NoteModal = ({ open ,note, onClose }: IModalContentEditNotesProps) => {
+const NoteModal = ({ open ,note, onClose, isNewNote }: IModalContentEditNotesProps) => {
     const {refreshNumber, setRefreshNumber} = useContext(MyGlobalContext);
     const [title,setTitle] = useState(note.title);
     const [text,setText] = useState(note.text)
@@ -39,23 +40,34 @@ const NoteModal = ({ open ,note, onClose }: IModalContentEditNotesProps) => {
         if(event.target.id === "modal-title"){
             setTitle(event.target.value);
         }
-        else if(event.target.id === "modal-text"){
-            setText(event.target.value);
-        }
-        if(title ==="" || title === undefined){
+        else if(title ==="" || title === undefined){
             setTitle(note.title);
         }
-        if(text ==="" || text === undefined){
+
+        if(event.target.id === "modal-text"){
+            setText(event.target.value);
+        }
+        else if(text ==="" || text === undefined){
             setText(note.text);
         }
 
       };
     const handleSubmit = (event:any) => {
-        refetch();
+        console.log(text)
+        if(title!=="" && text!=="" && title!==undefined && text!==undefined){
+            if(isNewNote){
+                addRefetch();
+            }
+            else{
+                refetch();
+            }
+        }
+        setTitle("");
+        setText("");
         onClose();
     };
 
-    const putData: () => any = async () => {
+    const putNote: () => any = async () => {
         const URL = `http://localhost:3001/PUT/notes/${note.uid}/${note.nid}`;
         const response = await axios.put(URL, 
             {
@@ -64,17 +76,30 @@ const NoteModal = ({ open ,note, onClose }: IModalContentEditNotesProps) => {
             });
         return response;
     };
-
-    
     const { data, refetch, isLoading, isError, isSuccess:putIsSuccess } = useQuery(
         ["putNotes"],
-        putData,
+        putNote,
         { enabled: false }
       );
-      
+
+    const addNote: () => any = async () => {
+        const URL = `http://localhost:3001/POST/notes/1`;
+        const response = await axios.post(URL,
+            {
+                title: title,
+                text: text,
+            });
+        return response;
+    };
+    const { data: addData, refetch: addRefetch, isSuccess: addIsSuccess } = useQuery(
+        ["addNotes"],
+        addNote,
+        { enabled: false }
+        );
+    
     useMemo(() => {
         setRefreshNumber(refreshNumber + 1);
-    }, [data, putIsSuccess]);
+    }, [data, putIsSuccess, addIsSuccess, addData]);
     
     if(note){
         return (
@@ -87,17 +112,17 @@ const NoteModal = ({ open ,note, onClose }: IModalContentEditNotesProps) => {
                 aria-describedby="modal-modal-description"
               >
                 <div>
-                    <Stack spacing={5} sx={style} border='ActiveBorder'>
+                    <Stack spacing={2} sx={style} border='ActiveBorder'>
                         <form>
-                            <Input sx={{ fontSize: 50, textAlign: 'center' }} disableUnderline name = "title"
+                            <Input sx={{ fontSize: 38, textAlign: 'center' }} disableUnderline name = "title"
                             id="modal-title" placeholder="Enter Title..."  onChange={event => handleInput(event)} defaultValue={note.title}/>
 
-                        <textarea style={{textAlign:'center'}} id="modal-text" defaultValue={note.text} placeholder="Enter Text..."
+                            <Input style={{textAlign:'center'}} id="modal-text" defaultValue={note.text} placeholder="Enter Text..." disableUnderline 
                                 name="text" onChange={event => handleInput(event)}/>
-                        <Grid padding={3} container spacing={2}>
-                            <Button sx={{marginLeft:"auto"}} variant="outlined" color="error" onClick={handleClose}>Cancel</Button>
-                            <Button sx={{marginRight:"auto"}} variant="outlined" onClick={handleSubmit}>Save</Button>
-                        </Grid>
+                            <Grid padding={3} container spacing={2}>
+                                <Button sx={{marginLeft:"auto"}} variant="outlined" color="error" onClick={handleClose}>Cancel</Button>
+                                <Button sx={{marginRight:"auto"}} variant="outlined" onClick={handleSubmit}>Save</Button>
+                            </Grid>
                         </form>
                     
 
