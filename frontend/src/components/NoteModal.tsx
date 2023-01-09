@@ -5,8 +5,10 @@ import Modal from "@mui/material/Modal";
 import { Stack } from "@mui/system";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { useContext, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { MyGlobalContext } from "../App";
+import Textarea from '@mui/joy/Textarea';
+import Typography from "@mui/joy/Typography";
 
 interface IModalContentEditNotesProps{
     open: boolean;
@@ -36,21 +38,26 @@ const NoteModal = ({ open ,note, onClose, isNewNote }: IModalContentEditNotesPro
         onClose();
     };
 
+    //populate it when it is first opened.
+    useEffect(() => {
+        setTitle(note.title);
+        setText(note.text);
+    },[open]);
+
+    //Input validation
     const handleInput = (event: any) => {
+
         if(event.target.id === "modal-title"){
-            setTitle(event.target.value);
+            if(event.target.value.length <= 30){
+                setTitle(event.target.value);
+            }
         }
-        else if(title ==="" || title === undefined){
-            setTitle(note.title);
+        else{
+            if(event.target.value.length <= 140){
+                setText(event.target.value);
+            }
         }
-
-        if(event.target.id === "modal-text"){
-            setText(event.target.value);
-        }
-        else if(text ==="" || text === undefined){
-            setText(note.text);
-        }
-
+            
       };
     const handleSubmit = (event:any) => {
         console.log(text)
@@ -76,7 +83,7 @@ const NoteModal = ({ open ,note, onClose, isNewNote }: IModalContentEditNotesPro
             });
         return response;
     };
-    const { data, refetch, isLoading, isError, isSuccess:putIsSuccess } = useQuery(
+    const { data, refetch, isSuccess:putIsSuccess } = useQuery(
         ["putNotes"],
         putNote,
         { enabled: false }
@@ -97,6 +104,7 @@ const NoteModal = ({ open ,note, onClose, isNewNote }: IModalContentEditNotesPro
         { enabled: false }
         );
     
+    //Using memo since useEffect has a weird issue with infinite looping when setting values.
     useMemo(() => {
         setRefreshNumber(refreshNumber + 1);
     }, [data, putIsSuccess, addIsSuccess, addData]);
@@ -107,7 +115,7 @@ const NoteModal = ({ open ,note, onClose, isNewNote }: IModalContentEditNotesPro
                 open={open}
                 onClose={handleClose}
                 key={note.nid}
-        
+                sx={{}}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
               >
@@ -115,10 +123,23 @@ const NoteModal = ({ open ,note, onClose, isNewNote }: IModalContentEditNotesPro
                     <Stack spacing={2} sx={style} border='ActiveBorder'>
                         <form>
                             <Input sx={{ fontSize: 38, textAlign: 'center' }} disableUnderline name = "title"
-                            id="modal-title" placeholder="Enter Title..."  onChange={event => handleInput(event)} defaultValue={note.title}/>
+                            id="modal-title" placeholder="Enter Title..." value={title}  onChange={event => handleInput(event)} defaultValue={note.title}/>
 
-                            <Input style={{textAlign:'center'}} id="modal-text" defaultValue={note.text} placeholder="Enter Text..." disableUnderline 
-                                name="text" onChange={event => handleInput(event)}/>
+                            <Textarea
+                           color="neutral"
+                           disabled={text.length >= 140 ? true : false}
+                           minRows={2}
+                           size="md"
+                           variant="outlined"
+                            style={{textAlign:'center'}} id="modal-text" defaultValue={note.text} value={text} placeholder="Enter Text..."
+                            name="text" 
+                            onChange={event => handleInput(event)}
+                            endDecorator={
+                                <Typography level="body3" sx={{ ml: 'auto' }}>
+                                  {140 - text.length} character(s) left
+                                </Typography>
+                              }
+                            />
                             <Grid padding={3} container spacing={2}>
                                 <Button sx={{marginLeft:"auto"}} variant="outlined" color="error" onClick={handleClose}>Cancel</Button>
                                 <Button sx={{marginRight:"auto"}} variant="outlined" onClick={handleSubmit}>Save</Button>

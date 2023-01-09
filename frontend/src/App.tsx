@@ -37,7 +37,6 @@ function App() {
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
     </MyGlobalContext.Provider>
-   
   );
 }
 

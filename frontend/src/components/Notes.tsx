@@ -11,8 +11,8 @@ import NoteModal from './NoteModal';
 import { MyGlobalContext } from '../App';
 import IconButton from '@mui/material/IconButton';
 import AddIcon from '@mui/icons-material/Add';
-import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
-import { red } from '@mui/material/colors';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+
 export interface NoteProps{
   nId: number;
   uId:number;
@@ -26,6 +26,7 @@ export interface NoteModalProps{
   handleClose:() => void,
   isNewNote: boolean;
 }
+
 function Notes() {
   const {refreshNumber, setRefreshNumber} = useContext(MyGlobalContext);
   const [selected,setSelected] = useState<NoteProps>({nId:0,uId:0,title:"",text:""});
@@ -99,8 +100,8 @@ function Notes() {
   if (notesSuccess) {
     return (
       <>
-      <div className="w-full mt-10">
-        <Grid container spacing={1}>
+      <div className="w-full mt-10" style={{backgroundColor: "" }}>
+        <Grid container spacing={1} sx={{borderRadius: '22px', backgroundColor: "#c0cef0", alignItems:'center'}}>
           {notesData.data.map((note:any) => (
             
               <Card 
@@ -108,6 +109,8 @@ function Notes() {
                 key={note.nid}
 
                 sx={{
+                  borderRadius:'8px',
+                  padding:"10px",
                   width: 225,
                   height: "90%",
                   display:"flex",
@@ -119,15 +122,15 @@ function Notes() {
                 
                   <CardHeader titleTypographyProps={{variant:'h6'}} title={note.title}
                   action={
-                    <IconButton onClick={()=>handleDelete(  note.uid,note.nid)} aria-label="settings">
-                      <RemoveCircleOutlineIcon></RemoveCircleOutlineIcon>
+                    <IconButton onClick={()=>handleDelete(note.uid,note.nid)} aria-label="settings">
+                      <DeleteOutlineIcon></DeleteOutlineIcon>
                     </IconButton> 
                   }
                   ></CardHeader>
 
               <div onClick={()=>handleOpen(note)}>
                   <CardContent>
-                    <Typography variant="body2">{note.text}</Typography>
+                    <Typography style={{wordWrap:"break-word"}} variant="body2">{note.text}</Typography>
                   </CardContent>
                   <CardActions disableSpacing sx={{mt: "auto"}}>
                   </CardActions>

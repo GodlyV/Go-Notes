@@ -1,5 +1,12 @@
 .App {
   text-align: center;
+  background-image: url("https://img.freepik.com/free-vector/simple-gradient-background-vector-winter-blue-pink_53876-105768.jpg?w=2000");
+  position: fixed;
+  min-width: 100%;
+  min-height: 100%;
+  background-size: cover;
+  background-position: center;
+
 }
 
 .App-logo {
