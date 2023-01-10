@@ -29,7 +29,7 @@ app.get('/GET/notes', (req, res) => {
 
 app.get('/GET/notes', (req, res) => {
     const uId = req.query.uid;
-    const select = `SELECT * from notes where uid =${uId}`;
+    const select = `SELECT * from notes where uid =${uId} ORDER BY last_modified DESC`;
     pool.query(select,(err,result)=>{
         res.send(result.rows);
     })
@@ -51,7 +51,8 @@ app.put('/PUT/notes/:uid/:nid', (req, res) => {
 app.put('/PUT/notes/:uid/:nid', (req, res) => {
     const title =req.body.title;
     const text =req.body.text;
-    const updateNotes = `UPDATE notes SET title = '${title}', text = '${text}' WHERE uid = ${req.params.uid} AND nid = ${req.params.nid}`;
+    const time = new Date(Date.now()).toISOString().replace('T',' ').replace('Z','');
+    const updateNotes = `UPDATE notes SET title = '${title}', text = '${text}', last_modified = '${time}' WHERE uid = ${req.params.uid} AND nid = ${req.params.nid}`;
     pool.query(updateNotes,(err,result)=>{
         res.send(result.rows);
     })
@@ -78,7 +79,8 @@ app.delete('/DELETE/notes/:uid/:nid', (req, res) => {
 app.post('/POST/notes/:uid', (req, res) => {
     const title =req.body.title;
     const text =req.body.text;
-    const insert = `INSERT INTO notes (uid, title,text) VALUES ( ${req.params.uid},'${title}', '${text}')`;
+    const time = new Date(Date.now()).toISOString().replace('T',' ').replace('Z','');
+    const insert = `INSERT INTO notes (uid, title,text,last_modified) VALUES ( ${req.params.uid},'${title}', '${text}', '${time}')`;
     pool.query(insert,(err,result)=>{
         res.send(result.rows);
     });

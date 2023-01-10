@@ -13,5 +13,6 @@ RUN npm install @tanstack/react-query
 RUN npm install -D tailwindcss
 RUN npm install @mui/joy @emotion/react @emotion/styled
 RUN npm i @tanstack/react-query-devtools
+RUN npm install cypress --save-dev
 COPY tailwind.config.js ./
 CMD ["npm", "run", "start"]

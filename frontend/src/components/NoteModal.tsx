@@ -10,6 +10,7 @@ import { MyGlobalContext } from "../App";
 import Textarea from '@mui/joy/Textarea';
 import Typography from "@mui/joy/Typography";
 
+
 interface IModalContentEditNotesProps{
     open: boolean;
     note: any;
@@ -48,7 +49,7 @@ const NoteModal = ({ open ,note, onClose, isNewNote }: IModalContentEditNotesPro
     const handleInput = (event: any) => {
 
         if(event.target.id === "modal-title"){
-            if(event.target.value.length <= 30){
+            if(event.target.value.length <= 15){
                 setTitle(event.target.value);
             }
         }
@@ -110,46 +111,46 @@ const NoteModal = ({ open ,note, onClose, isNewNote }: IModalContentEditNotesPro
     }, [data, putIsSuccess, addIsSuccess, addData]);
     
     if(note){
+        
         return (
             <Modal
                 open={open}
                 onClose={handleClose}
                 key={note.nid}
-                sx={{}}
+                sx={{borderRadius: '16px'}}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
+                closeAfterTransition
+                
               >
                 <div>
                     <Stack spacing={2} sx={style} border='ActiveBorder'>
                         <form>
                             <Input sx={{ fontSize: 38, textAlign: 'center' }} disableUnderline name = "title"
-                            id="modal-title" placeholder="Enter Title..." value={title}  onChange={event => handleInput(event)} defaultValue={note.title}/>
-
+                            id="modal-title" placeholder="Enter Title..." value={title}  onChange={event => handleInput(event)}/>
                             <Textarea
-                           color="neutral"
-                           disabled={text.length >= 140 ? true : false}
-                           minRows={2}
-                           size="md"
-                           variant="outlined"
-                            style={{textAlign:'center'}} id="modal-text" defaultValue={note.text} value={text} placeholder="Enter Text..."
-                            name="text" 
-                            onChange={event => handleInput(event)}
-                            endDecorator={
-                                <Typography level="body3" sx={{ ml: 'auto' }}>
-                                  {140 - text.length} character(s) left
-                                </Typography>
-                              }
+                                color="neutral"
+                                minRows={2}
+                                size="md"
+                                variant="outlined"
+                                style={{textAlign:'center'}} id="modal-text" value={text} placeholder="Enter Text..."
+                                name="text" 
+                                onChange={event => handleInput(event)}
+                                endDecorator={
+                                    <Typography level="body3" sx={{ ml: 'auto' }}>
+                                    {140 - text.length} character(s) left
+                                    </Typography>
+                                }
                             />
                             <Grid padding={3} container spacing={2}>
-                                <Button sx={{marginLeft:"auto"}} variant="outlined" color="error" onClick={handleClose}>Cancel</Button>
-                                <Button sx={{marginRight:"auto"}} variant="outlined" onClick={handleSubmit}>Save</Button>
+                                <Button sx={{marginRight:"auto"}} id="cancel-button" variant="outlined" color="error" onClick={handleClose}>Cancel</Button>
+                                <Button id="save-button" disabled={text.length===0 || title.length ===0} sx={{marginLeft:"auto"}} variant="outlined" onClick={handleSubmit}>Save</Button>
                             </Grid>
                         </form>
                     
 
                     </Stack>
                 </div>
-                
               </Modal>  
         )
     }

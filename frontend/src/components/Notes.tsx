@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { forwardRef, useContext, useEffect, useMemo, useState } from 'react';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
@@ -12,6 +12,11 @@ import { MyGlobalContext } from '../App';
 import IconButton from '@mui/material/IconButton';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import Slide from '@mui/material/Slide';
+import { TransitionProps } from '@mui/material/transitions';
+import Zoom from '@mui/material/Zoom';
+
+
 
 export interface NoteProps{
   nId: number;
@@ -49,13 +54,11 @@ function Notes() {
     reDelete();
   };
   const handleAdd = () => {
+    setOpen(true);
     setIsNewNote(true);
   };
   useEffect(() => {
     if(!open && nid !== 0 && uid !== 0 && nid !== undefined && uid !== undefined){
-      console.log(nid);
-      console.log(uid);
-
       reDelete();
       deleteNote();
     }
@@ -70,7 +73,7 @@ function Notes() {
     }});
     return response;
   };
-  const { data:notesData, refetch:reGet, isLoading:notesLoading, isError:notesError, isSuccess:notesSuccess } = useQuery(
+  const { data:notesData, refetch:reGet, isSuccess:notesSuccess } = useQuery(
     ["getNotes"],
     fetchNote,
     { enabled: true }
@@ -89,7 +92,6 @@ function Notes() {
   );
 
   useEffect(() =>{
-    console.log("refreshing");
     reGet();
   },[refreshNumber]);
 
@@ -100,49 +102,10 @@ function Notes() {
   if (notesSuccess) {
     return (
       <>
+      
       <div className="w-full mt-10" style={{backgroundColor: "" }}>
         <Grid container spacing={1} sx={{borderRadius: '22px', backgroundColor: "#c0cef0", alignItems:'center'}}>
-          {notesData.data.map((note:any) => (
-            
-              <Card 
-                variant="outlined"
-                key={note.nid}
-
-                sx={{
-                  borderRadius:'8px',
-                  padding:"10px",
-                  width: 225,
-                  height: "90%",
-                  display:"flex",
-                  flexDirection: "column",
-                  position: "relative",
-                  margin: "20px",
-              }}
-              >
-                
-                  <CardHeader titleTypographyProps={{variant:'h6'}} title={note.title}
-                  action={
-                    <IconButton onClick={()=>handleDelete(note.uid,note.nid)} aria-label="settings">
-                      <DeleteOutlineIcon></DeleteOutlineIcon>
-                    </IconButton> 
-                  }
-                  ></CardHeader>
-
-              <div onClick={()=>handleOpen(note)}>
-                  <CardContent>
-                    <Typography style={{wordWrap:"break-word"}} variant="body2">{note.text}</Typography>
-                  </CardContent>
-                  <CardActions disableSpacing sx={{mt: "auto"}}>
-                  </CardActions>
-                </div>
-                <CardActions>
-
-                </CardActions>
-
-              </Card>
-              
-          ))}
-          <div onClick={()=>handleOpen(selected)}>
+        <div onClick={()=>handleAdd()}>
             <Card 
               variant="outlined"
               id={'newNote'}
@@ -158,13 +121,50 @@ function Notes() {
             >
               <CardActions sx={{marginLeft: "auto",marginRight:"auto"}}>
               <IconButton onClick={()=>handleAdd()} aria-label="add-Icon">
-                <AddIcon></AddIcon>
+                <AddIcon id="add-button"></AddIcon>
                   </IconButton>
               </CardActions>
             </Card>
           </div>
-          
+          {notesData.data.map((note:any) => (
+            
+              <Card
+                variant="outlined"
+                key={`card${note.nid}`}
+                id={`card${note.nid}`}
+                sx={{
+                  borderRadius:'8px',
+                  padding:"10px",
+                  width: 225,
+                  height: "90%",
+                  display:"flex",
+                  flexDirection: "column",
+                  position: "relative",
+                  margin: "20px",
+              }}
+              >
+                
+                  <CardHeader id={`cardTitle${note.nid}`} key={`cardTitle${note.nid}`} titleTypographyProps={{variant:'h6'}} title={note.title}
+                  action={
+                    <IconButton onClick={()=>handleDelete(note.uid,note.nid)} aria-label="settings">
+                      <DeleteOutlineIcon color="warning"></DeleteOutlineIcon>
+                    </IconButton> 
+                  }
+                  ></CardHeader>
+
+              <div onClick={()=>handleOpen(note)}>
+                  <CardContent>
+                    <Typography id={`cardText${note.nid}`} style={{wordWrap:"break-word"}} variant="body2">{note.text}</Typography>
+                  </CardContent>
+                  <CardActions disableSpacing sx={{mt: "auto"}}>
+                  </CardActions>
+                </div>
+
+              </Card>
+              
+          ))}
         </Grid>
+        
       </div>
       <NoteModal open={open} note={selected} onClose={handleClose} isNewNote={isNewNote}></NoteModal>
       </>
@@ -174,7 +174,7 @@ function Notes() {
     <div>
       <div className="w-full mt-10">
         <Grid container spacing={1}>
-          <div onClick={()=>handleOpen(selected)}>
+          <div onClick={()=>handleAdd}>
             <Card 
               variant="outlined"
               id={'newNote'}
@@ -197,7 +197,8 @@ function Notes() {
           </div>
         </Grid>
       </div>
-      <NoteModal open={open} note={selected} onClose={handleClose} isNewNote={isNewNote}></NoteModal>
+        <NoteModal open={open} note={selected} onClose={handleClose} isNewNote={isNewNote}></NoteModal>
+
   </div>
   );
 }
