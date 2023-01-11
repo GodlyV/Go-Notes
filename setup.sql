@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS notes (
 
 INSERT INTO users (email,password_md5) VALUES 
 	('James@gmail.com','5f4dcc3b5aa765d61d8327deb882cf99'),
-	('arnaud.paul@dormakaba.com','5f4dcc3b5aa765d61d8327deb882cf99');
+	('arnaud@Dorma.com','5f4dcc3b5aa765d61d8327deb882cf99');
 	
 INSERT INTO notes (uId,title,text) VALUES
 	(1,'My first note','This is my first note'),
