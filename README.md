@@ -9,11 +9,10 @@ This is done through a main dashboard with a list of notes pulled from a Postgre
 
 2. Go to http://localhost:3000 and there will be two predefined notes. You can edit them or delete them.
 
-Frontend: localhost:3000
-Express Backend: localhost:3001
-Recommendation Backend: localhost:5000
-Adminer: localhost:8080
-MySQL: localhost:9906 
+##### Frontend: localhost:3000
+##### Express Backend: localhost:3001
+##### Adminer: localhost:8080
+##### Postgres: localhost:9906 
 
 #### Developping
 1. There are cypress tests set up to test he different components and the CRUD operations. 
