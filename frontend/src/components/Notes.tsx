@@ -97,7 +97,7 @@ function Notes() {
     return (
       <>
       
-      <div className="w-full mt-10" style={{backgroundColor: "" }}>
+      <div className="w-full mt-10">
         <Grid container spacing={1} sx={{borderRadius: '22px', backgroundColor: "#c0cef0", alignItems:'center'}}>
         <div onClick={()=>handleAdd()}>
             <Card 
@@ -106,16 +106,18 @@ function Notes() {
               key={'newNote'}
               sx={{
                 width: 225,
-                height: 160,
+                height: 155,
                 display:"center",
                 flexDirection: "column",
                 position: "relative",
                 margin: "20px",
+                borderRadius: '8px',
+                backgroundColor: "#d5def5",
             }}
             >
               <CardActions sx={{marginLeft: "auto",marginRight:"auto"}}>
               <IconButton onClick={()=>handleAdd()} aria-label="add-Icon">
-                <AddIcon id="add-button"></AddIcon>
+                <AddIcon color="secondary" id="add-button"></AddIcon>
                   </IconButton>
               </CardActions>
             </Card>
