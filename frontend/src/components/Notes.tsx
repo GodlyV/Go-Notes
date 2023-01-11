@@ -12,18 +12,12 @@ import { MyGlobalContext } from '../App';
 import IconButton from '@mui/material/IconButton';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import Slide from '@mui/material/Slide';
-import { TransitionProps } from '@mui/material/transitions';
-import Zoom from '@mui/material/Zoom';
-
-
 
 export interface NoteProps{
   nId: number;
   uId:number;
   title: string;
   text: string;
-  //createdAt: Date;
 }
 export interface NoteModalProps{
   open: boolean;
