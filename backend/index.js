@@ -17,15 +17,6 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-/*
-app.get('/GET/notes', (req, res) => {
-    const uId = req.query.uid;
-    console.log(req.query);
-    return res.json({
-        uid: uId
-    });
-});
-*/
 
 app.get('/GET/notes', (req, res) => {
     const uId = req.query.uid;
@@ -34,19 +25,6 @@ app.get('/GET/notes', (req, res) => {
         res.send(result.rows);
     })
 });
-
-/*
-app.put('/PUT/notes/:uid/:nid', (req, res) => {
-    const title =req.body.title;
-    const text =req.body.text;
-    console.log(title);
-    console.log(text);
-    return res.json({
-        text: text,
-        title: title
-    })
-});
-*/
 
 app.put('/PUT/notes/:uid/:nid', (req, res) => {
     const title =req.body.title;
@@ -57,14 +35,6 @@ app.put('/PUT/notes/:uid/:nid', (req, res) => {
         res.send(result.rows);
     })
 });
-/*
-app.delete('/DELETE/notes/:uid/:nid', (req, res) => {
-    console.log(req.params);
-    return res.json({
-        message: 'DELETE',
-    });
-});
-*/
 
 app.delete('/DELETE/notes/:uid/:nid', (req, res) => {
     const deleteNotes = `DELETE FROM notes WHERE uid = ${req.params.uid} AND nid = ${req.params.nid}`;
